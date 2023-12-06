@@ -42,4 +42,9 @@ itemDict.bucket = {
     { name = "minecraft:lava_bucket",  display_name = "Lava Bucket" }
 }
 
+itemDict.fluid = {
+    { name = "minecraft:water", display_name = "Water" },
+    { name = "minecraft:lava",  display_name = "Lava" }
+}
+
 return itemDict

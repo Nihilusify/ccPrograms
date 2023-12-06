@@ -131,6 +131,68 @@ function tTurtle.findItemByType(itemType)
     return nil
 end
 
+-- Check if facing block is a specified name
+-- Args: side (string) Example: "front"
+--       block/partial name (string) Example: "minecraft:torch" or "torch"
+-- Returns true if facing block is specified name
+function tTurtle.checkBlock(side, name)
+    local success, data
+    if side == "front" then
+        local s, d = turtle.inspect()
+        success = s
+        data = d
+    elseif side == "up" then
+        local s, d = turtle.inspectUp()
+        success = s
+        data = d
+    elseif side == "down" then
+        local s, d = turtle.inspectDown()
+        success = s
+        data = d
+    else
+        return false
+    end
+
+    if success then
+        if data.name == block or data.name:find(block) then
+            return true
+        end
+    end
+    return false
+end
+
+-- Check if facing block is a specified type
+-- Args: side (string) Example: "front"
+--       item type from  (string) Example: "fluid"
+-- Returns true if facing block is specified type
+function tTurtle.checkBlockByType(side, itemType)
+    local success, data
+    if side == "front" then
+        local s, d = turtle.inspect()
+        success = s
+        data = d
+    elseif side == "up" then
+        local s, d = turtle.inspectUp()
+        success = s
+        data = d
+    elseif side == "down" then
+        local s, d = turtle.inspectDown()
+        success = s
+        data = d
+    else
+        return false
+    end
+
+    if success then
+        for _, v in pairs(itemDict[itemType]) do
+            if data.name == v.name then
+                return true
+            end
+        end
+    end
+    return false
+end
+
 -- Check fuel level, refuel if needed
 -- Args: fuelNeeded (number)
 -- Returns true if enough fuel

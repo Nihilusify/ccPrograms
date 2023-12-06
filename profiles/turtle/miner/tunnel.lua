@@ -46,14 +46,6 @@ if tTurtle.getInventorySpace() < requiredEmptySlots then
     tTurtle.waitForEmptyInventory(requiredEmptySlots)
 end
 
--- Check for torches
--- local torchSlot = tTurtle.findItemByType("lightSource")
--- if torchSlot == nil then
---     print("No torches found!  Waiting for torches...")
---     print("Press q to continue...")
---     torchSlot = tTurtle.waitForItemByType("lightSource")
--- end
-
 -- Dig tunnel
 -- Steps for moving forward (bottom row): dig, forward, digup
 -- Steps for turning: turn left, turn left, up, digup, up
@@ -85,6 +77,16 @@ for i = 1, length do
     if cobbleSlot ~= nil then
         turtle.select(cobbleSlot)
         turtle.placeUp()
+    end
+
+    -- If block below is a fluid source, place a block and pick it up
+    if tTurtle.checkBlockByType("down", "fluid") then
+        local cobbleSlot = tTurtle.findItemByType("primBlock")
+        if cobbleSlot ~= nil then
+            turtle.select(cobbleSlot)
+            turtle.placeDown()
+            turtle.digDown()
+        end
     end
 
     -- Place torches
