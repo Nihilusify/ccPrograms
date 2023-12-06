@@ -154,7 +154,7 @@ function tTurtle.checkBlock(side, name)
     end
 
     if success then
-        if data.name == block or data.name:find(block) then
+        if data.name == name or data.name:find(name) then
             return true
         end
     end
@@ -237,6 +237,40 @@ function tTurtle.refuelFromInventory(fuelNeeded)
     else
         return true
     end
+end
+
+-- Refuel from external lava source
+-- Args: side (string) Example: "front"
+-- Returns true if successful
+function tTurtle.refuelFromLava(side)
+    -- Find empty bucket
+    local bucketSlot = tTurtle.findItem("minecraft:bucket")
+    if bucketSlot == nil then
+        return false
+    end
+
+    turtle.select(bucketSlot)
+
+    if side == "front" then
+        if tTurtle.checkBlock("front", "minecraft:lava") then
+            turtle.place()
+            turtle.refuel()
+            return true
+        end
+    elseif side == "up" then
+        if tTurtle.checkBlock("up", "minecraft:lava") then
+            turtle.placeUp()
+            turtle.refuel()
+            return true
+        end
+    elseif side == "down" then
+        if tTurtle.checkBlock("down", "minecraft:lava") then
+            turtle.placeDown()
+            turtle.refuel()
+            return true
+        end
+    end
+    return false
 end
 
 -- Get inventory space

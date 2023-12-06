@@ -55,11 +55,15 @@ for i = 1, length do
     tTurtle.forwardDig()
     turtle.digUp()
 
-    -- Place block down if needed
-    local cobbleSlot = tTurtle.findItemByType("primBlock")
-    if cobbleSlot ~= nil then
-        turtle.select(cobbleSlot)
-        turtle.placeDown()
+    -- Place block down if needed, try to refuel first
+    if not turtle.detectDown() then
+        tTurtle.refuelFromLava("down")
+
+        local cobbleSlot = tTurtle.findItemByType("primBlock")
+        if cobbleSlot ~= nil then
+            turtle.select(cobbleSlot)
+            turtle.placeDown()
+        end
     end
 end
 
@@ -72,20 +76,29 @@ tTurtle.upDig()
 for i = 1, length do
     tTurtle.forwardDig()
 
-    -- Place block above if possible
-    local cobbleSlot = tTurtle.findItemByType("primBlock")
-    if cobbleSlot ~= nil then
-        turtle.select(cobbleSlot)
-        turtle.placeUp()
-    end
+    -- Place block above if possible, try to refuel first
+    if not turtle.detectUp() then
+        tTurtle.refuelFromLava("up")
 
-    -- If block below is a fluid source, place a block and pick it up
-    if tTurtle.checkBlockByType("down", "fluid") then
         local cobbleSlot = tTurtle.findItemByType("primBlock")
         if cobbleSlot ~= nil then
             turtle.select(cobbleSlot)
-            turtle.placeDown()
-            turtle.digDown()
+            turtle.placeUp()
+        end
+    end
+
+    -- If block below is a fluid source, try to refuel from it, else place a block and pick it up
+    if tTurtle.checkBlockByType("down", "fluid") then
+        if tTurtle.refuelFromLava("down") then
+            print("Refueled from fluid")
+        else
+            -- Place cobble
+            local cobbleSlot = tTurtle.findItemByType("primBlock")
+            if cobbleSlot ~= nil then
+                turtle.select(cobbleSlot)
+                turtle.placeDown()
+                turtle.digDown()
+            end
         end
     end
 
