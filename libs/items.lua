@@ -26,7 +26,8 @@ itemDict.primBlock = {
     { name = "minecraft:cobbled_deepslate", display_name = "Cobbled Deepslate" },
     { name = "minecraft:deepslate",         display_name = "Deepslate" },
     { name = "minecraft:basalt",            display_name = "Basalt" },
-    { name = "minecraft:soul_soil",         display_name = "Soul Soil" }
+    { name = "minecraft:soul_soil",         display_name = "Soul Soil" },
+    { name = "minecraft:blackstone",         display_name = "Blackstone" }
 }
 
 -- Blocks that fall
