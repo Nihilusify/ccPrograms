@@ -4,6 +4,10 @@
   "dependencies": ["tTurtle.lua", "items.lua", "github.lua"],
   "programs": [
     {
+      "name": "startup.lua",
+      "version": "1.0"
+    },
+    {
       "name": "tunnel.lua",
       "version": "1.1"
     },

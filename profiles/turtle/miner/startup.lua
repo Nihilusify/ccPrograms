@@ -27,6 +27,13 @@ for k, v in pairs(remoteProfile.programs) do
     -- If localProfile doesn't exist, or if localProfile is older than remoteProfile
     if not localProfile or not localProfile.programs or not localProfile.programs[k] or localProfile.programs[k].version < v.version then
         local success = shell.run("github", "Nihilusify", "ccPrograms", "profiles/turtle/miner/" .. v.name, v.name)
+        -- If program is startup.lua, stop downloading the rest of the programs and reboot
+        if v.name == "startup.lua" then
+            print("New version of startup.lua downloaded, rebooting...")
+            os.sleep(3)
+            os.reboot()
+        end
+        
         if not success then
             return false
         end
