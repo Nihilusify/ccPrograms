@@ -8,7 +8,8 @@ term.clear()
 local localProfile = {}
 if fs.exists("profile.json") then
     local file = fs.open("profile.json", "r")
-    localProfile = textutils.unserialize(file.readAll())
+    local body = file.readAll()
+    localProfile = textutils.unserialiseJSON(body)
     file.close()
 end
 
