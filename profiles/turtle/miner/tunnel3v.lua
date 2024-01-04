@@ -45,15 +45,13 @@ if tTurtle.findItemByType("storage") then
 end
 
 -- Dump inventory, but keep:
--- 1. 1 stack of light sources
--- 2. 1 stack of primitive building blocks
--- 3. 1 stack of fuel
--- 4. 1 bucket
+-- 1 stack of light sources
+-- 1 stack of primitive building blocks
+-- 1 bucket
 function dumpInventory()
     local keepTable = {
         ["lightSource"] = 1,
         ["primBlock"] = 1,
-        ["fuel"] = 1,
         ["bucket"] = 1
     }
     turtle.turnLeft()
