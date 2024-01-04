@@ -34,11 +34,15 @@ local fuelNeeded = 3 + 4 + (2 * length + 4) + 3 + (2 * length + 4) + 3 + (2 * le
 print("Fuel needed: " .. fuelNeeded)
 tTurtle.refuelFromInventory(fuelNeeded)
 
--- Check for storage block in inventory and place it,
-if tTurtle.findItemByType("storage") then
+-- Check for storage block in inventory and place it.
+-- Wait for storage block before continuing.
+print("Waiting for storage block (e.g. chest/barrel)...")
+print("Press q to continue anyway...")
+local storageSlot = tTurtle.waitForItemByType("storage")
+if storageSlot ~= nil then
     turtle.turnLeft()
     turtle.turnLeft()
-    turtle.select(tTurtle.findItemByType("storage"))
+    turtle.select(storageSlot)
     turtle.place()
     turtle.turnLeft()
     turtle.turnLeft()
