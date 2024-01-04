@@ -126,3 +126,4 @@ dumpInventory()
 
 -- Done
 print("Done")
+print("Fuel remaining: " .. turtle.getFuelLevel())
