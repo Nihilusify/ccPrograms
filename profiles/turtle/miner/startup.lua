@@ -60,4 +60,4 @@ term.clear()
 print("Download complete, starting program...")
 
 -- Run tunnel script
-shell.run("tunnel", "100")
+shell.run("tunnel3v", "100")

@@ -48,4 +48,9 @@ itemDict.fluid = {
     { name = "minecraft:lava",  display_name = "Lava" }
 }
 
+itemDict.storage = {
+    { name = "minecraft:chest", display_name = "Chest" },
+    { name = "minecraft:barrel", display_name = "Barrel" }
+}
+
 return itemDict

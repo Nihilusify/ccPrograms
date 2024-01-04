@@ -273,6 +273,43 @@ function tTurtle.refuelFromLava(side)
     return false
 end
 
+-- Place block above if possible, try to refuel first
+-- Args: side (string) Example: "front"
+-- Returns nothing
+function tTurtle.plugHole(side)
+    if side == "up" then
+        if not turtle.detectUp() then
+            tTurtle.refuelFromLava("up")
+
+            local cobbleSlot = tTurtle.findItemByType("primBlock")
+            if cobbleSlot ~= nil then
+                turtle.select(cobbleSlot)
+                turtle.placeUp()
+            end
+        end
+    elseif side == "down" then
+        if not turtle.detectDown() then
+            tTurtle.refuelFromLava("down")
+
+            local cobbleSlot = tTurtle.findItemByType("primBlock")
+            if cobbleSlot ~= nil then
+                turtle.select(cobbleSlot)
+                turtle.placeDown()
+            end
+        end
+    elseif side == "forward" then
+        if not turtle.detect() then
+            tTurtle.refuelFromLava("forward")
+
+            local cobbleSlot = tTurtle.findItemByType("primBlock")
+            if cobbleSlot ~= nil then
+                turtle.select(cobbleSlot)
+                turtle.place()
+            end
+        end
+    end
+end
+
 -- Get inventory space
 -- Returns number of empty slots
 function tTurtle.getInventorySpace()
@@ -457,6 +494,66 @@ function tTurtle.waitForEmptyInventory(emptySlots, timeout)
         end
         -- sleep
         os.sleep(0.2)
+    end
+end
+
+-- Dump inventory except for specified items
+--  Keep amount of stacks specified in ignore table
+-- Args: ignore (table) Example: { "minecraft:torch": 1, "minecraft:cobblestone": 2, "minecraft:coal": 1 }
+-- Returns nothing
+function tTurtle.dumpInventory(ignore)
+    -- Dump inventory
+    print("Dumping inventory...")
+    for i = 1, 16 do
+        turtle.select(i)
+        local data = turtle.getItemDetail()
+        if data then
+            local keep = false
+            if ignore then
+                for k, v in pairs(ignore) do
+                    if data.name == k then
+                        if v > 0 then
+                            keep = true
+                            ignore[k] = v - 1
+                        end
+                    end
+                end
+            end
+            if not keep then
+                turtle.drop()
+            end
+        end
+    end
+end
+
+-- Dump inventory except for specified item types
+--  Keep amount of stacks specified in ignore table
+-- Args: ignore (table) Example: { "fuel": 1, "primBlock": 2 }
+-- Returns nothing
+function tTurtle.dumpInventoryExceptByType(ignore)
+    -- Dump inventory
+    print("Dumping inventory...")
+    for i = 1, 16 do
+        turtle.select(i)
+        local data = turtle.getItemDetail()
+        if data then
+            local keep = false
+            if ignore then
+                for k, v in pairs(ignore) do
+                    for _, w in pairs(itemDict[k]) do
+                        if data.name == w.name then
+                            if v > 0 then
+                                keep = true
+                                ignore[k] = v - 1
+                            end
+                        end
+                    end
+                end
+            end
+            if not keep then
+                turtle.drop()
+            end
+        end
     end
 end
 

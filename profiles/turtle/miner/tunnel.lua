@@ -3,8 +3,9 @@
 -- Place torches at regular intervals
 -- Place cobble at end to prevent mobs from getting out
 --
--- Usage: tunnel <length>
+-- Usage: tunnel <length> <ignoreCobbleTop> <ignoreCobbleBottom>
 -- Length must be between 1 and 100
+-- ignoreCobble is optional, if true, cobble will not be placed at top and/or bottom
 
 -- Local variables
 local requiredEmptySlots = 10
@@ -23,6 +24,18 @@ end
 if length < 1 or length > 100 then
     print("Length must be between 1 and 100")
     return
+end
+
+-- Get ignoreCobbleTop
+local ignoreCobbleTop = false
+if arg[2] == "true" then
+    ignoreCobbleTop = true
+end
+
+-- Get ignoreCobbleBottom
+local ignoreCobbleBottom = false
+if arg[3] == "true" then
+    ignoreCobbleBottom = true
 end
 
 -- Require libraries
@@ -46,45 +59,56 @@ if tTurtle.getInventorySpace() < requiredEmptySlots then
     tTurtle.waitForEmptyInventory(requiredEmptySlots)
 end
 
+-- Place block above if possible, try to refuel first
+tTurtle.plugHole("up")
+
+-- Place block below if possible, try to refuel first
+tTurtle.plugHole("down")
+
 -- Dig tunnel
 -- Steps for moving forward (bottom row): dig, forward, digup
 -- Steps for turning: turn left, turn left, up, digup, up
 -- Steps for moving back (top row): dig, forward
 print("Digging tunnel...")
 for i = 1, length do
+
+    tTurtle.refuelFromLava("forward")
     tTurtle.forwardDig()
     turtle.digUp()
 
     -- Place block down if needed, try to refuel first
-    if not turtle.detectDown() then
-        tTurtle.refuelFromLava("down")
-
-        local cobbleSlot = tTurtle.findItemByType("primBlock")
-        if cobbleSlot ~= nil then
-            turtle.select(cobbleSlot)
-            turtle.placeDown()
-        end
+    if not ignoreCobbleBottom then
+        tTurtle.plugHole("down")
     end
 end
 
 print("Returning to start...")
+-- Plug hole at end of tunnel
+tTurtle.plugHole("forward")
+tTurtle.upDig()
+tTurtle.plugHole("forward")
+tTurtle.upDig()
+-- Place torch
+local torchSlot = tTurtle.findItemByType("lightSource")
+if torchSlot ~= nil then
+    tTurtle.placeDownDig(torchSlot)
+end
+tTurtle.plugHole("forward")
 turtle.turnLeft()
 turtle.turnLeft()
-tTurtle.upDig()
-tTurtle.upDig()
+
+-- Place block above if needed, try to refuel first
+if not ignoreCobbleTop then
+    tTurtle.plugHole("up")
+end
 
 for i = 1, length do
+    tTurtle.refuelFromLava("forward")
     tTurtle.forwardDig()
 
     -- Place block above if possible, try to refuel first
-    if not turtle.detectUp() then
-        tTurtle.refuelFromLava("up")
-
-        local cobbleSlot = tTurtle.findItemByType("primBlock")
-        if cobbleSlot ~= nil then
-            turtle.select(cobbleSlot)
-            turtle.placeUp()
-        end
+    if not ignoreCobbleTop then
+        tTurtle.plugHole("up")
     end
 
     -- If block below is a fluid source, try to refuel from it, else place a block and pick it up
