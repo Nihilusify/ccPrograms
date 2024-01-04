@@ -129,5 +129,6 @@ tTurtle.upDig()
 dumpInventory()
 
 -- Done
+tTurtle.plugHole("down")
 print("Done")
 print("Fuel remaining: " .. turtle.getFuelLevel())

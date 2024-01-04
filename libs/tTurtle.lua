@@ -273,7 +273,7 @@ function tTurtle.refuelFromLava(side)
     return false
 end
 
--- Place block above if possible, try to refuel first
+-- Place block if possible, try to refuel first
 -- Args: side (string) Example: "front"
 -- Returns nothing
 function tTurtle.plugHole(side)
