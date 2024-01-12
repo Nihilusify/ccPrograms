@@ -5,7 +5,7 @@
   "programs": [
     {
       "name": "startup.lua",
-      "version": "1.5"
+      "version": "2.0"
     },
     {
       "name": "tunnel.lua",
@@ -30,6 +30,14 @@
     {
       "name": "tunnel5v.lua",
       "version": "1.6"
+    },
+    {
+      "name": "editInstructions.lua",
+      "version": "1.0"
+    },
+    {
+      "name": "doInstructions.lua",
+      "version": "1.0"
     }
   ]
 }

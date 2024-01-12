@@ -59,5 +59,9 @@ end
 term.clear()
 print("Download complete, starting program...")
 
--- Run tunnel script
-shell.run("tunnel5v", "200")
+-- If instructions.txt exists, run doInstructions.lua
+if fs.exists("instructions.txt") then
+    shell.run("doInstructions")
+else
+    shell.run("editInstructions")
+end
