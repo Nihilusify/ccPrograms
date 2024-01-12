@@ -5,11 +5,11 @@
   "programs": [
     {
       "name": "startup.lua",
-      "version": "1.4"
+      "version": "1.5"
     },
     {
       "name": "tunnel.lua",
-      "version": "1.5"
+      "version": "1.6"
     },
     {
       "name": "tRef.lua",
@@ -25,11 +25,11 @@
     },
     {
       "name": "tunnel3v.lua",
-      "version": "1.5"
+      "version": "1.6"
     },
     {
       "name": "tunnel5v.lua",
-      "version": "1.5"
+      "version": "1.6"
     }
   ]
 }

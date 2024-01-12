@@ -1,7 +1,7 @@
 -- Turtle program to dig 5 1x3 tunnels on top of each other, then return to start
 
 -- Usage: tunnel5v <length>
--- Length must be between 1 and 300
+-- Length must be between 1 and 200
 
 -- Local variables
 local requiredEmptySlotsPerTunnel = 10
@@ -16,8 +16,8 @@ if length == nil then
     return
 end
 
-if length < 1 or length > 300 then
-    print("Length must be between 1 and 300")
+if length < 1 or length > 200 then
+    print("Length must be between 1 and 200")
     return
 end
 
