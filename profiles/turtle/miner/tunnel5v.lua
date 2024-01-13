@@ -1,7 +1,8 @@
 -- Turtle program to dig 5 1x3 tunnels on top of each other, then return to start
 
--- Usage: tunnel5v <length>
+-- Usage: tunnel5v <length> <[skipStorage]>
 -- Length must be between 1 and 200
+-- skipStorage is optional, if true, will not wait for storage block
 
 -- Local variables
 local requiredEmptySlotsPerTunnel = 10
@@ -12,7 +13,7 @@ term.clear()
 -- Get length
 local length = tonumber(arg[1])
 if length == nil then
-    print("Usage: tunnel5v <length>")
+    print("Usage: tunnel5v <length> <[skipStorage]>")
     return
 end
 
@@ -34,18 +35,20 @@ local fuelNeeded = 6 + 4 + (2 * length + 4) + 6 + 3 + (2 * length + 4) + 3 + (2 
 print("Fuel needed: " .. fuelNeeded)
 tTurtle.refuelFromInventory(fuelNeeded)
 
--- Check for storage block in inventory and place it.
--- Wait for storage block before continuing.
-print("Waiting for storage block (e.g. chest/barrel)...")
-print("Press q to continue anyway...")
-local storageSlot = tTurtle.waitForItemByType("storage")
-if storageSlot ~= nil then
-    turtle.turnLeft()
-    turtle.turnLeft()
-    turtle.select(storageSlot)
-    turtle.place()
-    turtle.turnLeft()
-    turtle.turnLeft()
+if arg[2] ~= "true" then
+    -- Check for storage block in inventory and place it.
+    -- Wait for storage block before continuing.
+    print("Waiting for storage block (e.g. chest/barrel)...")
+    print("Press q to continue anyway...")
+    local storageSlot = tTurtle.waitForItemByType("storage")
+    if storageSlot ~= nil then
+        turtle.turnLeft()
+        turtle.turnLeft()
+        turtle.select(storageSlot)
+        turtle.place()
+        turtle.turnLeft()
+        turtle.turnLeft()
+    end
 end
 
 -- Dump inventory, but keep:
