@@ -4,7 +4,7 @@
 -- Place cobble at end to prevent mobs from getting out
 --
 -- Usage: tunnel <length> <ignoreCobbleTop> <ignoreCobbleBottom>
--- Length must be between 1 and 200
+-- Length must be between 1 and 150
 -- ignoreCobble is optional, if true, cobble will not be placed at top and/or bottom
 
 -- Local variables
@@ -21,8 +21,8 @@ if length == nil then
     return
 end
 
-if length < 1 or length > 200 then
-    print("Length must be between 1 and 200")
+if length < 1 or length > 150 then
+    print("Length must be between 1 and 150")
     return
 end
 

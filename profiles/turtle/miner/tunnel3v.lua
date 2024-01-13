@@ -1,7 +1,7 @@
 -- Turtle program to dig 3 1x3 tunnels on top of each other, then return to start
 
 -- Usage: tunnel3v <length> <[skipStorage]>
--- Length must be between 1 and 200
+-- Length must be between 1 and 150
 -- skipStorage is optional, if true, will not wait for storage block
 
 -- Local variables
@@ -17,8 +17,8 @@ if length == nil then
     return
 end
 
-if length < 1 or length > 200 then
-    print("Length must be between 1 and 200")
+if length < 1 or length > 150 then
+    print("Length must be between 1 and 150")
     return
 end
 
