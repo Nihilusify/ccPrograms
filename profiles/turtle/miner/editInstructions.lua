@@ -46,7 +46,7 @@ local function printHelp()
     helpText = helpText .. "\nAvailable instructions:\n"
     helpText = helpText .. "- go: forward, back, up, down, left, right\n"
     helpText = helpText .. "   e.g. go forward 3 right 2\n"
-    helpText = helpText .. "- goDig: forward, back, up, down, left, right\n"
+    helpText = helpText .. "- goDig: forward, up, down, left, right\n"
     helpText = helpText .. "   e.g. goDig forward 3 right 2\n"
     helpText = helpText .. "- program: run a program\n"
     helpText = helpText .. "   e.g. program tunnel 5\n"
