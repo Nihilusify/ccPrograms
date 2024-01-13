@@ -35,11 +35,12 @@ local function printHelp()
     helpText = helpText .. "- (h)elp: print this help message\n"
     helpText = helpText .. "- reset: reset and start again\n"
     helpText = helpText .. "- (l)ist: lists current instructions\n"
+    helpText = helpText .. "- (a)dd <instruction>: add instruction to list\n"
     helpText = helpText .. "- (r)emove <line number>: remove instruction at line number\n"
     helpText = helpText .. "- (e)dit <line number> <instruction>: edit instruction at line number\n"
+    helpText = helpText .. "- (i)nsert <line number> <instruction>: insert instruction at line number\n"
     helpText = helpText .. "- (s)ave: finish and save\n"
     helpText = helpText .. "- (c)ancel: cancel and discard\n"
-    helpText = helpText .. "- (a)dd <instruction>: add instruction to list\n"
     helpText = helpText .. "- (u)p/(d)own: scroll instructions\n"
 
     -- Print available instructions
@@ -201,6 +202,31 @@ local function addInstruction(instruction)
     instructions = instructions .. "\n" .. instruction
 end
 
+local function insertInstruction(lineNumber, instruction)
+    -- Check if instruction is valid
+    if not validateInstruction(instruction) then
+        return
+    end
+
+    -- Split instructions into lines
+    local lines = {}
+    for line in instructions:gmatch("[^\r\n]+") do
+        table.insert(lines, line)
+    end
+
+    -- Check if line number is valid
+    if lineNumber < 1 or lineNumber > #lines then
+        print("Invalid line number")
+        return
+    end
+
+    -- Insert instruction and shift lines down
+    table.insert(lines, lineNumber, instruction)
+
+    -- Join lines
+    instructions = table.concat(lines, "\n")
+end
+
 -- Main program
 
 instrWindow.setBackgroundColor(colors.white)
@@ -306,6 +332,20 @@ while true do
             addInstruction(table.concat(words, " ", 2))
         else
             print("Usage: add <instruction>")
+        end
+        -- Check if input is insert
+    elseif words[1] == "insert" or words[1] == "i" then
+        -- Check if line number is given
+        if #words >= 3 then
+            -- Check if line number is a number
+            if tonumber(words[2]) ~= nil then
+                -- Insert instruction
+                insertInstruction(tonumber(words[2]), table.concat(words, " ", 3))
+            else
+                print("Invalid line number")
+            end
+        else
+            print("Usage: insert <line number> <instruction>")
         end
         -- Check if input is up
     elseif words[1] == "up" or words[1] == "u" then
