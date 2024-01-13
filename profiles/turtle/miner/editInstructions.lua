@@ -50,6 +50,10 @@ local function printHelp()
     helpText = helpText .. "   e.g. goDig forward 3 right 2\n"
     helpText = helpText .. "- program: run a program\n"
     helpText = helpText .. "   e.g. program tunnel 5\n"
+    helpText = helpText .. "- wait: wait for a number of seconds\n"
+    helpText = helpText .. "   e.g. wait 5\n"
+    helpText = helpText .. "- waitUser: wait for user to press enter\n"
+    helpText = helpText .. "   e.g. waitUser\n"
 
     -- Print help text
     textutils.pagedPrint(helpText, height - 2)
@@ -139,6 +143,18 @@ local function validateInstruction(instruction)
     elseif instruction:match("^program") then
         -- Check if instruction is valid
         if not instruction:match("^program %w") then
+            print("Invalid instruction")
+            return false
+        end
+    elseif instruction:match("^wait") then
+        -- Check if instruction is valid
+        if not instruction:match("^wait %d+") then
+            print("Invalid instruction")
+            return false
+        end
+    elseif instruction:match("^waitUser") then
+        -- Check if instruction is valid
+        if not instruction:match("^waitUser") then
             print("Invalid instruction")
             return false
         end
