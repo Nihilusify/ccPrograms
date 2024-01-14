@@ -90,3 +90,59 @@ export const generateName = onRequest((request, response) => {
       logger.error(error);
     });
 });
+
+/**
+ * Get the default instructions list and return them.
+ * @param request - The request object.
+ * @param response - The response object.
+ * @returns The default instructions per profile.
+ *
+ * @example
+ * ```ts
+ * // Request
+ * // None
+ *
+ * // Response
+ * {
+ * "miner": [
+ *    "waitUser",
+ *    "program tunnel 100",
+ *  ],
+ * "...": []
+ * }
+ * ```
+ */
+export const getDefaultInstructions = onRequest((request, response) => {
+  // Read from firestore
+  // Document: shared/defaultInstructions
+  // Return all profiles' instructions
+  db.doc("shared/defaultInstructions")
+    .get()
+    .then((doc) => {
+      // If document does not exist, return error
+      if (!doc.exists) {
+        response.status(500).send("No defaultInstructions document found!");
+        logger.error("No defaultInstructions document found!");
+        return;
+      }
+
+      // Read instructions from document
+      const instructions = doc.data();
+
+      // If instructions is not an object, return error
+      if (typeof instructions !== "object") {
+        response.status(500).send("Instructions is not an object!");
+        logger.error("Instructions is not an object!");
+        return;
+      }
+
+      // Return instructions
+      response.status(200).send(instructions);
+      logger.info("Default instructions retrieved!");
+    })
+    .catch((error) => {
+      // Return error
+      response.status(500).send(error);
+      logger.error(error);
+    });
+});
