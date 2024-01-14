@@ -1,11 +1,11 @@
 {
   "name": "Miner",
   "description": "Collection of mining programs",
-  "dependencies": ["tTurtle.lua", "items.lua", "github.lua"],
+  "dependencies": ["tTurtle.lua", "items.lua"],
   "programs": [
     {
       "name": "startup.lua",
-      "version": "2.0"
+      "version": "2.1"
     },
     {
       "name": "tunnel.lua",

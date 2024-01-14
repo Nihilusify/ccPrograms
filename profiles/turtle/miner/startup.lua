@@ -3,6 +3,24 @@
 
 term.clear()
 
+-- local functions
+local function dlGitHub(user, repo, file, destination, branch)
+    local url = "https://raw.githubusercontent.com/" .. user .. "/" .. repo .. "/" .. branch .. "/" .. file
+    print("Downloading " .. file)
+    local response = http.get(url)
+    if response == nil then
+        print("Error downloading file")
+        return false
+    end
+    
+    -- Save file
+    local file = fs.open(destination, "w")
+    file.write(response.readAll())
+    file.close()
+
+    return true
+end
+
 -- Download scripts if newer version is available
 -- First read profile.json if it exists
 local localProfile = {}
@@ -14,7 +32,7 @@ if fs.exists("profile.json") then
 end
 
 -- Download new profile.json
-if not shell.run("github", "Nihilusify", "ccPrograms", "profiles/turtle/miner/profile.json", "profile.json") then
+if not dlGitHub("Nihilusify", "ccPrograms", "profiles/turtle/miner/profile.json", "profile.json", "main") then
     return false
 end
 
@@ -28,7 +46,7 @@ local reboot = false
 for k, v in pairs(remoteProfile.programs) do
     -- If localProfile doesn't exist, or if localProfile is older than remoteProfile
     if not localProfile or not localProfile.programs or not localProfile.programs[k] or localProfile.programs[k].version < v.version then
-        local success = shell.run("github", "Nihilusify", "ccPrograms", "profiles/turtle/miner/" .. v.name, v.name)
+        local success = dlGitHub("Nihilusify", "ccPrograms", "profiles/turtle/miner/" .. v.name, v.name, "main")
         -- If program is startup.lua, reboot after downloading
         if v.name == "startup.lua" then
             reboot = true
@@ -43,7 +61,7 @@ end
 -- Download dependency scripts
 print("Downloading dependencies...")
 for k, v in pairs(remoteProfile.dependencies) do
-    local success = shell.run("github", "Nihilusify", "ccPrograms", "libs/" .. v, v)
+    local success = dlGitHub("Nihilusify", "ccPrograms", "libs/" .. v, v, "main")
     if not success then
         return false
     end
