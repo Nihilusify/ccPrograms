@@ -245,6 +245,16 @@ end
 function tTurtle.refuelFromLava(side)
     -- Find empty bucket
     local bucketSlot = tTurtle.findItem("minecraft:bucket")
+
+    -- If no empty bucket, try to find lava bucket and refuel from it first
+    if bucketSlot == nil then
+        bucketSlot = tTurtle.findItem("minecraft:lava_bucket")
+        if bucketSlot ~= nil then
+            turtle.select(bucketSlot)
+            turtle.refuel()
+        end
+    end
+
     if bucketSlot == nil then
         return false
     end
