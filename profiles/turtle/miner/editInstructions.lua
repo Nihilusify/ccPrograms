@@ -34,6 +34,7 @@ local function printHelp()
     helpText = helpText .. "Available commands:\n"
     helpText = helpText .. "- (h)elp: print this help message\n"
     helpText = helpText .. "- reset: reset and start again\n"
+    helpText = helpText .. "- download: download instructions\n"
     helpText = helpText .. "- (l)ist: lists current instructions\n"
     helpText = helpText .. "- (a)dd <instruction>: add instruction to list\n"
     helpText = helpText .. "- (r)emove <line number>: remove instruction at line number\n"
@@ -227,6 +228,54 @@ local function insertInstruction(lineNumber, instruction)
     instructions = table.concat(lines, "\n")
 end
 
+local function downloadInstructions()
+    -- Download instructions
+    local url = "https://getdefaultinstructions-kzv2z32bna-uc.a.run.app"
+    local response = http.get(url)
+    if response == nil then
+        print("Failed to download instructions")
+        return
+    end
+
+    -- Read response
+    local body = response.readAll()
+    body = textutils.unserializeJSON(body)
+
+    -- body contains an object with multiple profile names as keys
+    -- and an array of instructions as values
+    -- e.g. { "miner": ["go forward 3", "go right 2"] }
+    -- Ask user for profile name
+    print("Available profiles:")
+    for profileName, _ in pairs(body) do
+        print(profileName)
+    end
+    print("Enter profile name:")
+    local profileName = read()
+
+    -- Check if profile name is valid
+    if body[profileName] == nil then
+        print("Invalid profile name")
+        return
+    end
+
+    -- Ask user for confirmation
+    print("Are you sure you want to download instructions for profile " .. profileName .. "? (y/n)")
+    local YNinput = read()
+    if YNinput ~= "y" and YNinput ~= "Y" then
+        return
+    end
+
+    -- Clear instructions
+    instructions = ""
+
+    -- Add instructions
+    for _, instruction in ipairs(body[profileName]) do
+        instructions = instructions .. instruction .. "\n"
+    end
+
+    print("Instructions downloaded")
+end
+
 -- Main program
 
 instrWindow.setBackgroundColor(colors.white)
@@ -347,6 +396,9 @@ while true do
         else
             print("Usage: insert <line number> <instruction>")
         end
+        -- Check if input is download
+    elseif words[1] == "download" then
+        downloadInstructions()
         -- Check if input is up
     elseif words[1] == "up" or words[1] == "u" then
         -- min scroll is 1
