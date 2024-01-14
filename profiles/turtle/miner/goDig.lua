@@ -2,7 +2,7 @@
 
 local args = { ... }
 if #args < 1 then
-    print("Usage: goDig <direction> <[number]>")
+    print("Usage: goDig <direction> <[distance]>")
     return
 end
 
@@ -10,16 +10,16 @@ end
 local tTurtle = require("tTurtle")
 
 local handlers = {
-    ["fd"] = tTurtle.forwardDig(),
-    ["forward"] = tTurtle.forwardDig(),
-    ["forwards"] = tTurtle.forwardDig(),
-    ["up"] = tTurtle.upDig(),
-    ["dn"] = tTurtle.downDig(),
-    ["down"] = tTurtle.downDig(),
-    ["lt"] = turtle.turnLeft(),
-    ["left"] = turtle.turnLeft(),
-    ["rt"] = turtle.turnRight(),
-    ["right"] = turtle.turnRight(),
+    ["fd"] = tTurtle.forwardDig,
+    ["forward"] = tTurtle.forwardDig,
+    ["forwards"] = tTurtle.forwardDig,
+    ["up"] = tTurtle.upDig,
+    ["dn"] = tTurtle.downDig,
+    ["down"] = tTurtle.downDig,
+    ["lt"] = turtle.turnLeft,
+    ["left"] = turtle.turnLeft,
+    ["rt"] = turtle.turnRight,
+    ["right"] = turtle.turnRight,
 }
 
 local nArg = 1
@@ -35,17 +35,11 @@ while nArg <= #args do
     end
     nArg = nArg + 1
 
-    local handler = handlers[string.lower(direction)]
-    if handler then
+    local fnHandler = handlers[string.lower(direction)]
+    if fnHandler then
         while distance > 0 do
-            if handler() then
-                distance = distance - 1
-            elseif turtle.getFuelLevel() == 0 then
-                print("Out of fuel")
-                return
-            else
-                sleep(0.5)
-            end
+            fnHandler()
+            distance = distance - 1
         end
     else
         print("No such direction: " .. direction)
