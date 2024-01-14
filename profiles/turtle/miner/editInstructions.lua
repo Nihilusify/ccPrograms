@@ -2,6 +2,9 @@
 
 -- Usage: editInstructions
 
+-- Require libraries
+local completion = require("cc.completion")
+
 -- Clear screen
 term.clear()
 
@@ -14,6 +17,9 @@ local cmdWindow = window.create(term.current(), 1, 10, width, math.floor(height 
 
 local instrScroll = 0
 
+local completionTable = {}
+local promptHistory = {}
+
 -- Read current instructions
 if fs.exists("instructions.txt") then
     local file = fs.open("instructions.txt", "r")
@@ -22,6 +28,84 @@ if fs.exists("instructions.txt") then
 end
 
 -- Local functions
+local function buildCompletionTable()
+    completionTable = {
+        "help",
+        "reset",
+        "download",
+        "list",
+        "add",
+        "remove",
+        "edit",
+        "insert",
+        "save",
+        "cancel",
+        "up",
+        "down",
+    }
+
+    local availableInstructions = {
+        "go",
+        "goDig",
+        "program",
+        "wait",
+        "waitUser",
+    }
+
+    -- Add first arguments completion for "go" and "goDig" instructions
+    for _, direction in ipairs({"forward", "back", "up", "down", "left", "right"}) do
+        table.insert(availableInstructions, "go " .. direction)
+        table.insert(availableInstructions, "goDig " .. direction)
+    end
+
+    local availablePrograms = {}
+
+    -- Read available programs from profile.json
+    if fs.exists("profile.json") then
+        local file = fs.open("profile.json", "r")
+        local profile = textutils.unserializeJSON(file.readAll())
+        file.close()
+
+        -- Read only names of programs and strip ".lua" extension
+        for _, program in ipairs(profile.programs) do
+            local program = program.name:gsub("%.lua$", "")
+            table.insert(availablePrograms, program)
+        end
+    end
+
+    -- Add arguments completion for "program" instruction
+    for _, program in ipairs(availablePrograms) do
+        table.insert(availableInstructions, "program " .. program)
+    end
+
+    -- Add instructions to completion table with "add" prefixes
+    for _, instruction in ipairs(availableInstructions) do
+        table.insert(completionTable, "add " .. instruction)
+    end
+
+    -- Add existing instructions to completion table with "edit" prefixes with line numbers
+    -- Split instructions into lines
+    local lines = {}
+    for line in instructions:gmatch("[^\r\n]+") do
+        table.insert(lines, line)
+    end
+
+    for lineNumber, instruction in ipairs(lines) do
+        table.insert(completionTable, "edit " .. lineNumber .. " " .. instruction)
+    end
+
+    -- Add available instructions to completion table with "insert" prefixes with line numbers
+    for _, instruction in ipairs(availableInstructions) do
+        for lineNumber = 1, #lines do
+            table.insert(completionTable, "insert " .. lineNumber .. " " .. instruction)
+        end
+    end
+end
+
+local function completeFn(text)
+    return completion.choice(text, completionTable)
+end
+
 local function printHelp()
 
     -- Hide windows
@@ -74,6 +158,10 @@ local function resetInstructions()
     if YNinput == "y" or YNinput == "Y" then
         -- Clear instructions
         instructions = ""
+
+        -- Build completion table
+        buildCompletionTable()
+
         print("Instructions reset.  Make sure to save before exiting.")
     end
 end
@@ -120,6 +208,9 @@ local function removeInstruction(lineNumber)
 
     -- Join lines
     instructions = table.concat(lines, "\n")
+
+    -- Build completion table
+    buildCompletionTable()
 end
 
 local function validateInstruction(instruction)
@@ -191,6 +282,9 @@ local function editInstruction(lineNumber, instruction)
 
     -- Join lines
     instructions = table.concat(lines, "\n")
+
+    -- Build completion table
+    buildCompletionTable()
 end
 
 local function addInstruction(instruction)
@@ -201,6 +295,9 @@ local function addInstruction(instruction)
 
     -- Add instruction
     instructions = instructions .. "\n" .. instruction
+
+    -- Build completion table
+    buildCompletionTable()
 end
 
 local function insertInstruction(lineNumber, instruction)
@@ -226,6 +323,9 @@ local function insertInstruction(lineNumber, instruction)
 
     -- Join lines
     instructions = table.concat(lines, "\n")
+
+    -- Build completion table
+    buildCompletionTable()
 end
 
 local function downloadInstructions()
@@ -273,10 +373,16 @@ local function downloadInstructions()
         instructions = instructions .. instruction .. "\n"
     end
 
+    -- Build completion table
+    buildCompletionTable()
+
     print("Instructions downloaded")
 end
 
 -- Main program
+
+-- Build completion table
+buildCompletionTable()
 
 instrWindow.setBackgroundColor(colors.white)
 instrWindow.setTextColor(colors.black)
@@ -291,7 +397,7 @@ print("For help, type 'help' or 'h' or '?'")
 while true do
     -- Read instruction
     write("-> ")
-    local input = read()
+    local input = read(nil, promptHistory, completeFn)
 
     -- Clear screen
     term.clear()
