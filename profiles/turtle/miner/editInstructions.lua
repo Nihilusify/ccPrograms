@@ -344,13 +344,16 @@ local function downloadInstructions()
     -- body contains an object with multiple profile names as keys
     -- and an array of instructions as values
     -- e.g. { "miner": ["go forward 3", "go right 2"] }
-    -- Ask user for profile name
+    local profileNames = {}
     print("Available profiles:")
     for profileName, _ in pairs(body) do
         print(profileName)
+        table.insert(profileNames, profileName)
     end
+    
+    -- Ask user for profile name
     print("Enter profile name:")
-    local profileName = read()
+    local profileName = read(nil, nil, function(text) return completion.choice(text, profileNames) end)
 
     -- Check if profile name is valid
     if body[profileName] == nil then
