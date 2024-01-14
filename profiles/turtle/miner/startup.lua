@@ -21,6 +21,55 @@ local function dlGitHub(user, repo, file, destination, branch)
     return true
 end
 
+local function requestName()
+    local url = "https://generatename-kzv2z32bna-uc.a.run.app"
+
+    -- Add computerID to the URL
+    local computerID = os.getComputerID()
+    local url = url .. "?computerID=" .. computerID
+
+    -- Send request
+    local response = http.get(url)
+    if response == nil then
+        print("Error requesting name")
+        return false
+    end
+
+    -- Get name from response
+    local body = response.readAll()
+    local name = textutils.unserialiseJSON(body).name
+
+    return name
+end
+
+local function assignName()
+    -- Get turtle name
+    local name = os.getComputerLabel()
+    if name == nil then
+        print("Turtle name not set, please enter a name:")
+        print("To generate a random name, just press enter")
+        name = read()
+
+        -- If name is empty, request a name from the name generator
+        if name == "" then
+            name = requestName()
+        end
+
+        -- If name is still nil, generate a random name
+        if name == nil then
+            name = "Miner" .. math.random(1000, 9999)
+        end
+
+        os.setComputerLabel(name)
+        print("My name is " .. name)
+    end
+end
+
+-- Main
+
+-- Assign name to turtle if it doesn't have one
+assignName()
+
 -- Download scripts if newer version is available
 -- First read profile.json if it exists
 local localProfile = {}
