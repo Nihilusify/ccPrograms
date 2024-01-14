@@ -37,6 +37,7 @@ end
 
 while turtle.getFuelLevel() < maxFuel do
     -- If lava above, refuel and move up until no more lava or max fuel
+    print("Going up...")
     while turtle.getFuelLevel() < maxFuel do
         if tTurtle.refuelFromLava("up") then
             tTurtle.upDig()
@@ -47,12 +48,14 @@ while turtle.getFuelLevel() < maxFuel do
     end
 
     -- Return down
+    print("Coming back down...")
     for i = 1, relativeY do
         tTurtle.downDig()
         relativeY = relativeY - 1
     end
 
     -- If lava below, refuel and move down until no more lava or max fuel
+    print("Going down...")
     while turtle.getFuelLevel() < maxFuel do
         if tTurtle.refuelFromLava("down") then
             tTurtle.downDig()
@@ -63,15 +66,18 @@ while turtle.getFuelLevel() < maxFuel do
     end
 
     -- Return up
+    print("Coming back up...")
     for i = 1, math.abs(relativeY) do
         tTurtle.upDig()
         relativeY = relativeY + 1
     end
 
     -- If lava in front, refuel and move forward one block
+    print("Going forward...")
     tTurtle.refuelFromLava("front")
     tTurtle.forwardDig()
     relativeX = relativeX + 1
+
     if not tTurtle.checkBlock("down", "minecraft:lava") or tTurtle.checkBlock("up", "minecraft:lava") or tTurtle.checkBlock("front", "minecraft:lava") then
         break
     end
