@@ -1,12 +1,14 @@
 -- Turtle tunneling program
 -- Dig a 1x3 tunnel with length parameter, then return to start
 -- Place torches at regular intervals
--- Place cobble at end to prevent mobs from getting out
+-- Place cobble at key positions to prevent mobs from getting out or lava from spilling
 --
--- Usage: tunnel <length> <ignoreCobbleTop> <ignoreCobbleBottom>
+-- Usage: tunnel <length> <ignoreCobbleTop> <ignoreCobbleBottom> <fillLeftWall> <fillRightWall>
 -- Length must be between 1 and 150
 -- ignoreCobble is optional, if true, cobble will not be placed at top and/or bottom
-
+-- fillLeftWall and fillRightWall are optional, if true, the left and/or right wall will be filled.  
+--      This takes extra time and fuel, so use with caution.  Extra fuel not calculated.
+--
 -- Local variables
 local requiredEmptySlots = 10
 local torchSpacing = 9
@@ -36,6 +38,17 @@ end
 local ignoreCobbleBottom = false
 if arg[3] == "true" then
     ignoreCobbleBottom = true
+end
+
+-- Get fillLeftWall
+local fillLeftWall = false
+if arg[4] == "true" then
+    fillLeftWall = true
+end
+-- Get fillRightWall
+local fillRightWall = false
+if arg[5] == "true" then
+    fillRightWall = true
 end
 
 -- Require libraries
@@ -95,6 +108,23 @@ for i = 1, length do
     if not ignoreCobbleBottom then
         tTurtle.plugHole("down")
     end
+
+    -- Fill hole left and/or right if needed
+    -- 2 blocks on left side and 1 on right for now.  The other 3 will be done when coming back
+    if fillLeftWall then
+        turtle.turnLeft()
+        tTurtle.plugHole("forward")
+        tTurtle.upDig()
+        tTurtle.plugHole("forward")
+        tTurtle.downDig()
+        turtle.turnRight()
+    end
+
+    if fillRightWall then
+        turtle.turnRight()
+        tTurtle.plugHole("forward")
+        turtle.turnLeft()
+    end
 end
 
 print("Returning to start...")
@@ -103,11 +133,6 @@ tTurtle.plugHole("forward")
 tTurtle.upDig()
 tTurtle.plugHole("forward")
 tTurtle.upDig()
--- Place torch
-local torchSlot = tTurtle.findItemByType("lightSource")
-if torchSlot ~= nil then
-    tTurtle.placeDownDig(torchSlot)
-end
 tTurtle.plugHole("forward")
 turtle.turnLeft()
 turtle.turnLeft()
@@ -118,6 +143,25 @@ if not ignoreCobbleTop then
 end
 
 for i = 1, length do
+
+    -- Fill hole left and/or right if needed
+    -- 2 blocks on right side and 1 on left as other 3 were done before
+    -- Remember, right is now left and left is now right
+    if fillRightWall then
+        turtle.turnLeft()
+        tTurtle.plugHole("forward")
+        tTurtle.downDig()
+        tTurtle.plugHole("forward")
+        tTurtle.upDig()
+        turtle.turnRight()
+    end
+
+    if fillLeftWall then
+        turtle.turnRight()
+        tTurtle.plugHole("forward")
+        turtle.turnLeft()
+    end
+
     tTurtle.refuelFromLava("forward")
     tTurtle.forwardDig()
 

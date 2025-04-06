@@ -1,8 +1,10 @@
 -- Turtle program to dig 5 1x3 tunnels on top of each other, then return to start
-
--- Usage: tunnel5v <length>
+-- 
+-- Usage: tunnel5v <length> <fillLeftWall> <fillRightWall>
 -- Length must be between 1 and 150
-
+-- fillLeftWall and fillRightWall are optional, if true, the left and/or right wall will be filled.  
+--      This takes extra time and fuel, so use with caution.  Extra fuel not calculated.
+--
 -- Local variables
 local requiredEmptySlotsPerTunnel = 10
 
@@ -12,13 +14,24 @@ term.clear()
 -- Get length
 local length = tonumber(arg[1])
 if length == nil then
-    print("Usage: tunnel5v <length> <[skipStorage]>")
+    print("Usage: tunnel5v <length> <fillLeftWall> <fillRightWall>")
     return
 end
 
 if length < 1 or length > 150 then
     print("Length must be between 1 and 150")
     return
+end
+
+-- Get fillLeftWall
+local fillLeftWall = "false"
+if arg[2] == "true" then
+    fillLeftWall = "true"
+end
+-- Get fillRightWall
+local fillRightWall = "false"
+if arg[3] == "true" then
+    fillRightWall = "true"
 end
 
 -- Require libraries
@@ -30,7 +43,9 @@ print("Tunnel length: " .. length)
 -- Check if enough fuel
 print("Fuel level: " .. turtle.getFuelLevel())
 -- Fuel needed for 5 tunnels
-local fuelNeeded = 6 + 4 + (2 * length + 4) + 6 + 3 + (2 * length + 4) + 3 + (2 * length + 4) + 3 + (2 * length + 4) + 3 + 6 + (2 * length + 4) + 6
+local fuelNeeded =
+    6 + 4 + (2 * length + 4) + 6 + 3 + (2 * length + 4) + 3 + (2 * length + 4) + 3 + (2 * length + 4) + 3 + 6 +
+        (2 * length + 4) + 6
 print("Fuel needed: " .. fuelNeeded)
 tTurtle.refuelFromInventory(fuelNeeded)
 
@@ -90,7 +105,7 @@ turtle.turnLeft()
 
 -- tunnel args: length, ignoreCobbleTop, ignoreCobbleBottom
 -- This is top tunnel, so plug holes above but not below
-shell.run("tunnel", length, "false", "true")
+shell.run("tunnel", length, "false", "true", fillLeftWall, fillRightWall)
 
 for i = 1, 6 do
     tTurtle.downDig()
@@ -105,7 +120,7 @@ for i = 1, 3 do
 end
 
 -- This is a middle tunnel, so don't plug holes above or below
-shell.run("tunnel", length, "true", "true")
+shell.run("tunnel", length, "true", "true", fillLeftWall, fillRightWall)
 
 for i = 1, 3 do
     tTurtle.downDig()
@@ -116,7 +131,7 @@ dumpInventory()
 -- Tunnel 3
 
 -- This is a middle tunnel, so don't plug holes above or below
-shell.run("tunnel", length, "true", "true")
+shell.run("tunnel", length, "true", "true", fillLeftWall, fillRightWall)
 
 dumpInventory()
 
@@ -134,7 +149,7 @@ turtle.turnLeft()
 turtle.turnLeft()
 
 -- This is a middle tunnel, so don't plug holes above or below
-shell.run("tunnel", length, "true", "true")
+shell.run("tunnel", length, "true", "true", fillLeftWall, fillRightWall)
 
 for i = 1, 3 do
     tTurtle.upDig()
@@ -156,7 +171,7 @@ turtle.turnLeft()
 turtle.turnLeft()
 
 -- This is the bottom tunnel, so plug holes below but not above
-shell.run("tunnel", length, "true", "false")
+shell.run("tunnel", length, "true", "false", fillLeftWall, fillRightWall)
 
 for i = 1, 6 do
     tTurtle.upDig()

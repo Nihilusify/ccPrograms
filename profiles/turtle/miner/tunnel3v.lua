@@ -1,8 +1,10 @@
 -- Turtle program to dig 3 1x3 tunnels on top of each other, then return to start
-
--- Usage: tunnel3v <length>
+--
+-- Usage: tunnel3v <length> <fillLeftWall> <fillRightWall>
 -- Length must be between 1 and 150
-
+-- fillLeftWall and fillRightWall are optional, if true, the left and/or right wall will be filled.  
+--      This takes extra time and fuel, so use with caution.  Extra fuel not calculated.
+--
 -- Local variables
 local requiredEmptySlotsPerTunnel = 10
 
@@ -12,13 +14,24 @@ term.clear()
 -- Get length
 local length = tonumber(arg[1])
 if length == nil then
-    print("Usage: tunnel3v <length> <[skipStorage]>")
+    print("Usage: tunnel3v <length> <fillLeftWall> <fillRightWall>")
     return
 end
 
 if length < 1 or length > 150 then
     print("Length must be between 1 and 150")
     return
+end
+
+-- Get fillLeftWall
+local fillLeftWall = "false"
+if arg[2] == "true" then
+    fillLeftWall = "true"
+end
+-- Get fillRightWall
+local fillRightWall = "false"
+if arg[3] == "true" then
+    fillRightWall = "true"
 end
 
 -- Require libraries
@@ -92,7 +105,7 @@ turtle.turnLeft()
 
 -- tunnel args: length, ignoreCobbleTop, ignoreCobbleBottom
 -- This is top tunnel, so plug holes above but not below
-shell.run("tunnel", length, "false", "true")
+shell.run("tunnel", length, "false", "true", fillLeftWall, fillRightWall)
 
 tTurtle.downDig()
 tTurtle.downDig()
@@ -103,7 +116,7 @@ dumpInventory()
 -- Tunnel 2
 
 -- This is the middle tunnel, so don't plug holes above or below
-shell.run("tunnel", length, "true", "true")
+shell.run("tunnel", length, "true", "true", fillLeftWall, fillRightWall)
 
 dumpInventory()
 
@@ -120,7 +133,7 @@ turtle.turnLeft()
 turtle.turnLeft()
 
 -- This is the bottom tunnel, so plug holes below but not above
-shell.run("tunnel", length, "true", "false")
+shell.run("tunnel", length, "true", "false", fillLeftWall, fillRightWall)
 
 tTurtle.upDig()
 tTurtle.upDig()
