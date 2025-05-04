@@ -1,7 +1,5 @@
 -- Program to ask user for a list of instructions and write them to a file
-
 -- Usage: editInstructions
-
 -- Require libraries
 local completion = require("cc.completion")
 
@@ -29,28 +27,10 @@ end
 
 -- Local functions
 local function buildCompletionTable()
-    completionTable = {
-        "help",
-        "reset",
-        "download",
-        "list",
-        "add",
-        "remove",
-        "edit",
-        "insert",
-        "save",
-        "cancel",
-        "up",
-        "down",
-    }
+    completionTable = {"help", "reset", "download", "list", "add", "remove", "edit", "insert", "save", "cancel", "up",
+                       "down"}
 
-    local availableInstructions = {
-        "go",
-        "goDig",
-        "program",
-        "wait",
-        "waitUser",
-    }
+    local availableInstructions = {"go", "goDig", "program", "wait", "waitUser"}
 
     -- Add first arguments completion for "go" and "goDig" instructions
     for _, direction in ipairs({"forward", "back", "up", "down", "left", "right"}) do
@@ -330,7 +310,9 @@ end
 
 local function downloadInstructions()
     -- Download instructions
-    local url = "https://getdefaultinstructions-kzv2z32bna-uc.a.run.app"
+    local url = "http://localhost:5173/instructions"
+    local computerID = os.getComputerID()
+    url = url .. "?computerId=" .. computerID
     local response = http.get(url)
     if response == nil then
         print("Failed to download instructions")
@@ -341,40 +323,15 @@ local function downloadInstructions()
     local body = response.readAll()
     body = textutils.unserializeJSON(body)
 
-    -- body contains an object with multiple profile names as keys
-    -- and an array of instructions as values
-    -- e.g. { "miner": ["go forward 3", "go right 2"] }
-    local profileNames = {}
-    print("Available profiles:")
-    for profileName, _ in pairs(body) do
-        print(profileName)
-        table.insert(profileNames, profileName)
-    end
-    
-    -- Ask user for profile name
-    print("Enter profile name:")
-    local profileName = read(nil, nil, function(text) return completion.choice(text, profileNames) end)
-
-    -- Check if profile name is valid
-    if body[profileName] == nil then
-        print("Invalid profile name")
-        return
-    end
-
     -- Ask user for confirmation
-    print("Are you sure you want to download instructions for profile " .. profileName .. "? (y/n)")
+    print("Are you sure you want to overwrite instructions? (y/n)")
     local YNinput = read()
     if YNinput ~= "y" and YNinput ~= "Y" then
         return
     end
 
-    -- Clear instructions
-    instructions = ""
-
     -- Add instructions
-    for _, instruction in ipairs(body[profileName]) do
-        instructions = instructions .. instruction .. "\n"
-    end
+    instructions = body["body"]
 
     -- Build completion table
     buildCompletionTable()
@@ -469,9 +426,11 @@ while true do
 
         term.redirect(term.native())
         term.clear()
-        textutils.slowPrint(instructions, 40)
-        
-        print("Instructions saved")
+
+        print(instructions)
+
+        write("Instructions ")
+        textutils.slowPrint("saved", 10)
 
         -- Exit loop
         break
@@ -479,7 +438,9 @@ while true do
     elseif words[1] == "cancel" or words[1] == "c" then
         term.redirect(term.native())
         term.clear()
-        textutils.slowPrint("Instructions discarded")
+        -- textutils.slowPrint("Instructions discarded")
+        write("Instructions ")
+        textutils.slowPrint("discarded", 40)
         -- Exit loop
         break
         -- Check if input is add

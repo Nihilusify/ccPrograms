@@ -1,7 +1,8 @@
 -- Startup script for turtle miner profile
 -- This script is meant to replace the default startup script
-
 term.clear()
+
+local base_url = "http://localhost:5173"
 
 -- local functions
 local function dlGitHub(user, repo, file, destination, branch)
@@ -12,7 +13,7 @@ local function dlGitHub(user, repo, file, destination, branch)
         print("Error downloading file")
         return false
     end
-    
+
     -- Save file
     local file = fs.open(destination, "w")
     file.write(response.readAll())
@@ -22,11 +23,11 @@ local function dlGitHub(user, repo, file, destination, branch)
 end
 
 local function requestName()
-    local url = "https://generatename-kzv2z32bna-uc.a.run.app"
+    local url = base_url .. "/util/generateName"
 
     -- Add computerID to the URL
     local computerID = os.getComputerID()
-    local url = url .. "?computerID=" .. computerID
+    local url = url .. "?computerId=" .. computerID
 
     -- Send request
     local response = http.get(url)
@@ -65,6 +66,32 @@ local function assignName()
     end
 end
 
+local function downloadInstructions()
+    -- Download instructions
+    local url = "http://localhost:5173/instructions"
+    local computerID = os.getComputerID()
+    url = url .. "?computerId=" .. computerID
+    local response = http.get(url)
+    if response == nil then
+        print("Failed to download instructions")
+        return
+    end
+
+    -- Read response
+    local body = response.readAll()
+    body = textutils.unserializeJSON(body)
+
+    -- Add instructions
+    instructions = body["body"]
+
+    -- Save instructions to file
+    local file = fs.open("instructions.txt", "w")
+    file.write(instructions)
+    file.close()
+
+    print("Instructions downloaded")
+end
+
 -- Main
 
 -- Assign name to turtle if it doesn't have one
@@ -94,13 +121,14 @@ file.close()
 local reboot = false
 for k, v in pairs(remoteProfile.programs) do
     -- If localProfile doesn't exist, or if localProfile is older than remoteProfile
-    if not localProfile or not localProfile.programs or not localProfile.programs[k] or localProfile.programs[k].version < v.version then
+    if not localProfile or not localProfile.programs or not localProfile.programs[k] or localProfile.programs[k].version <
+        v.version then
         local success = dlGitHub("Nihilusify", "ccPrograms", "profiles/turtle/miner/" .. v.name, v.name, "main")
         -- If program is startup.lua, reboot after downloading
         if v.name == "startup.lua" then
             reboot = true
         end
-        
+
         if not success then
             return false
         end
@@ -128,6 +156,7 @@ print("Download complete, starting program...")
 
 -- If instructions.txt exists, run doInstructions.lua
 if fs.exists("instructions.txt") then
+    downloadInstructions()
     shell.run("doInstructions")
 else
     shell.run("editInstructions")
