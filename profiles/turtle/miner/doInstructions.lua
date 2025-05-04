@@ -54,14 +54,24 @@ for i = 1, #lines do
     elseif words[1] == "program" then
         -- Run program script with arguments
         shell.run(words[2], table.unpack(words, 3))
-    elseif words[1] == "wait" then
-        -- Sleep for specified number of seconds
-        print("Waiting for " .. words[2] .. " seconds")
-        sleep(tonumber(words[2]))
     elseif words[1] == "waitUser" then
         -- Wait for user to press enter
         print("Press enter to continue")
         read()
+    elseif words[1] == "wait" then
+        -- Sleep for specified number of seconds
+        print("Waiting for " .. words[2] .. " seconds")
+        sleep(tonumber(words[2]))
+    elseif words[1] == "restart" then
+        -- Restart the computer
+        print("Restarting computer")
+        sleep(1)
+        os.reboot()
+    elseif words[1] == "shutdown" then
+        -- Shutdown the computer
+        print("Shutting down computer")
+        sleep(1)
+        os.shutdown()
     end
 end
 

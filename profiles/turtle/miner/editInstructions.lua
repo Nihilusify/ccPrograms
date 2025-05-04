@@ -30,7 +30,7 @@ local function buildCompletionTable()
     completionTable = {"help", "reset", "download", "list", "add", "remove", "edit", "insert", "save", "cancel", "up",
                        "down"}
 
-    local availableInstructions = {"go", "goDig", "program", "wait", "waitUser"}
+    local availableInstructions = {"go", "goDig", "program", "wait", "waitUser", "restart", "shutdown"}
 
     -- Add first arguments completion for "go" and "goDig" instructions
     for _, direction in ipairs({"forward", "back", "up", "down", "left", "right"}) do
@@ -120,6 +120,10 @@ local function printHelp()
     helpText = helpText .. "   e.g. wait 5\n"
     helpText = helpText .. "- waitUser: wait for user to press enter\n"
     helpText = helpText .. "   e.g. waitUser\n"
+    helpText = helpText .. "- restart: restart the computer\n"
+    helpText = helpText .. "   e.g. restart\n"
+    helpText = helpText .. "- shutdown: shutdown the computer\n"
+    helpText = helpText .. "   e.g. shutdown\n"
 
     -- Print help text
     textutils.pagedPrint(helpText, height - 2)
@@ -219,15 +223,27 @@ local function validateInstruction(instruction)
             print("Invalid instruction")
             return false
         end
+    elseif instruction:match("^waitUser") then
+        -- Check if instruction is valid
+        if not instruction:match("^waitUser") then
+            print("Invalid instruction")
+            return false
+        end
     elseif instruction:match("^wait") then
         -- Check if instruction is valid
         if not instruction:match("^wait %d+") then
             print("Invalid instruction")
             return false
         end
-    elseif instruction:match("^waitUser") then
+    elseif instruction:match("^restart") then
         -- Check if instruction is valid
-        if not instruction:match("^waitUser") then
+        if not instruction:match("^restart") then
+            print("Invalid instruction")
+            return false
+        end
+    elseif instruction:match("^shutdown") then
+        -- Check if instruction is valid
+        if not instruction:match("^shutdown") then
             print("Invalid instruction")
             return false
         end

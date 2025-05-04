@@ -33,11 +33,11 @@
     },
     {
       "name": "editInstructions.lua",
-      "version": "1.7"
+      "version": "1.8"
     },
     {
       "name": "doInstructions.lua",
-      "version": "1.1"
+      "version": "1.2"
     },
     {
       "name": "goDig.lua",
