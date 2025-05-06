@@ -9,7 +9,7 @@
     },
     {
       "name": "tunnel.lua",
-      "version": "1.8"
+      "version": "1.9"
     },
     {
       "name": "tRef.lua",
@@ -25,11 +25,11 @@
     },
     {
       "name": "tunnel3v.lua",
-      "version": "1.10"
+      "version": "1.11"
     },
     {
       "name": "tunnel5v.lua",
-      "version": "1.10"
+      "version": "1.11"
     },
     {
       "name": "editInstructions.lua",

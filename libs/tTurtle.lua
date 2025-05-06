@@ -1,6 +1,5 @@
 -- Library of functions for turtles
 -- Author: Terence van Jaarsveldt
-
 -- If not a turtle, return
 if not turtle then
     print("Not a turtle!")
@@ -562,6 +561,49 @@ function tTurtle.dumpInventoryExceptByType(ignore)
             end
             if not keep then
                 turtle.drop()
+            end
+        end
+    end
+end
+
+-- Dump specified item type items from inventory
+-- Args: type blacklist (array) Example: { "fuel", "primBlock" }
+--       stack limit (number): Number of slots to drop.  If nil, drop all
+--                    Useful for making sure you have enough space for other items
+--                    Example: 2 => 2 slots will be emptied and dumping will stop
+-- Returns nothing
+function tTurtle.dumpInventoryBlacklist(blacklist, stackLimit)
+    -- Dump inventory
+    local emptiedSlots = 0
+    print("Dumping inventory...")
+    for i = 1, 16 do
+        turtle.select(i)
+        local data = turtle.getItemDetail()
+        if data then
+            local drop = false
+            if blacklist then
+                for _, v in pairs(blacklist) do
+                    for _, w in pairs(itemDict[v]) do
+                        if data.name == w.name then
+                            drop = true
+                        end
+                    end
+                end
+            end
+            if drop then
+                if stackLimit then
+                    if emptiedSlots < stackLimit then
+                        emptiedSlots = emptiedSlots + 1
+                        print("Dropping " .. data.display_name)
+                        turtle.drop()
+                    else
+                        -- Stop dropping if stack limit reached
+                        break
+                    end
+                else
+                    print("Dropping " .. data.display_name)
+                    turtle.drop()
+                end
             end
         end
     end

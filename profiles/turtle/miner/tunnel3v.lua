@@ -1,7 +1,7 @@
 -- Turtle program to dig 3 1x3 tunnels on top of each other, then return to start
 --
 -- Usage: tunnel3v <length> <fillLeftWall> <fillRightWall>
--- Length must be between 1 and 150
+-- Length recommended to be less than 150
 -- fillLeftWall and fillRightWall are optional, if true, the left and/or right wall will be filled.  
 --      This takes extra time and fuel, so use with caution.  Extra fuel not calculated.
 --
@@ -18,9 +18,13 @@ if length == nil then
     return
 end
 
-if length < 1 or length > 150 then
-    print("Length must be between 1 and 150")
+if length < 1 then
+    print("Length must be greater than 0")
     return
+end
+
+if length > 150 then
+    print("Warning: Length is greater than 150, this may cause issues with fuel and inventory space")
 end
 
 -- Get fillLeftWall

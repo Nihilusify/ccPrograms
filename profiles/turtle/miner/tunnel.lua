@@ -4,13 +4,15 @@
 -- Place cobble at key positions to prevent mobs from getting out or lava from spilling
 --
 -- Usage: tunnel <length> <ignoreCobbleTop> <ignoreCobbleBottom> <fillLeftWall> <fillRightWall>
--- Length must be between 1 and 150
+-- Length recommended to be less than 150
 -- ignoreCobble is optional, if true, cobble will not be placed at top and/or bottom
 -- fillLeftWall and fillRightWall are optional, if true, the left and/or right wall will be filled.  
 --      This takes extra time and fuel, so use with caution.  Extra fuel not calculated.
 --
 -- Local variables
 local requiredEmptySlots = 10
+local requiredEmptySlotsInTunnel = 3
+local inTunnelCheckLength = 64
 local torchSpacing = 9
 
 -- Clear screen
@@ -19,13 +21,17 @@ term.clear()
 -- Get length
 local length = tonumber(arg[1])
 if length == nil then
-    print("Usage: tunnel <length>")
+    print("Usage: tunnel <length> <ignoreCobbleTop> <ignoreCobbleBottom> <fillLeftWall> <fillRightWall>")
     return
 end
 
-if length < 1 or length > 150 then
-    print("Length must be between 1 and 150")
+if length < 1 then
+    print("Length must be greater than 0")
     return
+end
+
+if length > 150 then
+    print("Warning: Length is greater than 150, this may cause issues with fuel and inventory space")
 end
 
 -- Get ignoreCobbleTop
@@ -125,6 +131,25 @@ for i = 1, length do
         tTurtle.plugHole("forward")
         turtle.turnLeft()
     end
+
+    -- If length is more than 150; Every inTunnelCheckLength blocks, 
+    -- make sure there is at least the required empty slots.
+    -- If not, drop items to make space
+    if length > 150 and i % inTunnelCheckLength == 0 then
+        local invEmptySpace = tTurtle.getInventorySpace()
+        if (invEmptySpace < requiredEmptySlotsInTunnel) then
+            print("Not enough inventory space!  Dropping some items...")
+            tTurtle.dumpInventoryBlacklist({"primBlock"}, requiredEmptySlotsInTunnel - invEmptySpace)
+        end
+        -- Check again.  If still not enough space, break loop to go back to startTimer
+        invEmptySpace = tTurtle.getInventorySpace()
+        if (invEmptySpace < requiredEmptySlotsInTunnel) then
+            print("Still not enough inventory space!")
+            -- Go back to start.  Change length to make sure we don't go too far
+            length = i
+            break
+        end
+    end
 end
 
 print("Returning to start...")
@@ -175,6 +200,17 @@ for i = 1, length do
     torchSlot = tTurtle.findItemByType("lightSource")
     if torchSlot ~= nil and i % torchSpacing == 0 then
         tTurtle.placeDownDig(torchSlot)
+    end
+
+    -- If length is more than 150; Every inTunnelCheckLength blocks, 
+    -- make sure there is at least the required empty slots.
+    -- If not, drop items to make space
+    if length > 150 and i % inTunnelCheckLength == 0 then
+        local invEmptySpace = tTurtle.getInventorySpace()
+        if (invEmptySpace < requiredEmptySlotsInTunnel) then
+            print("Not enough inventory space!  Dropping some items...")
+            tTurtle.dumpInventoryBlacklist({"primBlock"}, requiredEmptySlotsInTunnel - invEmptySpace)
+        end
     end
 end
 
