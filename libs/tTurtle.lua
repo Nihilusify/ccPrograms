@@ -594,14 +594,14 @@ function tTurtle.dumpInventoryBlacklist(blacklist, stackLimit)
                 if stackLimit then
                     if emptiedSlots < stackLimit then
                         emptiedSlots = emptiedSlots + 1
-                        print("Dropping " .. data.display_name)
+                        print("Dropping " .. data.name)
                         turtle.drop()
                     else
                         -- Stop dropping if stack limit reached
                         break
                     end
                 else
-                    print("Dropping " .. data.display_name)
+                    print("Dropping " .. data.name)
                     turtle.drop()
                 end
             end
