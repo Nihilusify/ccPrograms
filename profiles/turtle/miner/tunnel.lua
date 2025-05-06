@@ -12,7 +12,7 @@
 -- Local variables
 local requiredEmptySlots = 10
 local requiredEmptySlotsToContinue = 3
-local inTunnelCheckLength = 64
+local inTunnelCheckLength = 20
 local torchSpacing = 9
 
 -- Clear screen
