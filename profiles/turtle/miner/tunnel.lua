@@ -11,7 +11,7 @@
 --
 -- Local variables
 local requiredEmptySlots = 10
-local requiredEmptySlotsInTunnel = 3
+local requiredEmptySlotsToContinue = 3
 local inTunnelCheckLength = 64
 local torchSpacing = 9
 
@@ -133,17 +133,18 @@ for i = 1, length do
     end
 
     -- If length is more than 150; Every inTunnelCheckLength blocks, 
-    -- make sure there is at least the required empty slots.
-    -- If not, drop items to make space
+    -- Drop all primitive blocks to make space for more valuable items
+    -- Make sure there is at least the required empty slots.
+    -- If not, return to start
     if length > 150 and i % inTunnelCheckLength == 0 then
+        -- Sort inventory
+        tTurtle.sortInventory()
+
+        -- Dump all primitive blocks to make space for more valuable items
+        tTurtle.dumpInventoryBlacklist({"primBlock"}, 1)
+
         local invEmptySpace = tTurtle.getInventorySpace()
-        if (invEmptySpace < requiredEmptySlotsInTunnel) then
-            print("Not enough inventory space!  Dropping some items...")
-            tTurtle.dumpInventoryBlacklist({"primBlock"}, requiredEmptySlotsInTunnel - invEmptySpace)
-        end
-        -- Check again.  If still not enough space, break loop to go back to startTimer
-        invEmptySpace = tTurtle.getInventorySpace()
-        if (invEmptySpace < requiredEmptySlotsInTunnel) then
+        if (invEmptySpace < requiredEmptySlotsToContinue) then
             print("Still not enough inventory space!")
             -- Go back to start.  Change length to make sure we don't go too far
             length = i
@@ -211,6 +212,16 @@ for i = 1, length do
             print("Not enough inventory space!  Dropping some items...")
             tTurtle.dumpInventoryBlacklist({"primBlock"}, requiredEmptySlotsInTunnel - invEmptySpace)
         end
+    end
+
+    -- If length is more than 150; Every inTunnelCheckLength blocks, 
+    -- Drop all primitive blocks to make space for more valuable items
+    if length > 150 and i % inTunnelCheckLength == 0 then
+        -- Sort inventory
+        tTurtle.sortInventory()
+
+        -- Dump all primitive blocks to make space for more valuable items
+        tTurtle.dumpInventoryBlacklist({"primBlock"}, 1)
     end
 end
 

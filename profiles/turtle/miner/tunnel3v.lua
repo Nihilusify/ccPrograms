@@ -75,6 +75,7 @@ function dumpInventory()
         ["primBlock"] = 1,
         ["bucket"] = 1
     }
+    tTurtle.sortInventory()
     turtle.turnLeft()
     turtle.turnLeft()
     tTurtle.dumpInventoryExceptByType(keepTable)

@@ -568,11 +568,10 @@ end
 
 -- Dump specified item type items from inventory
 -- Args: type blacklist (array) Example: { "fuel", "primBlock" }
---       stack limit (number): Number of slots to drop.  If nil, drop all
---                    Useful for making sure you have enough space for other items
---                    Example: 2 => 2 slots will be emptied and dumping will stop
+--       keepSlots (number): Number of stack slots to keep.  If nil, drop all
+--                    Example: 2 => Everything except 2 stacks will be dropped
 -- Returns nothing
-function tTurtle.dumpInventoryBlacklist(blacklist, stackLimit)
+function tTurtle.dumpInventoryBlacklist(blacklist, keepSlots)
     -- Dump inventory
     local emptiedSlots = 0
     print("Dumping inventory...")
@@ -591,19 +590,43 @@ function tTurtle.dumpInventoryBlacklist(blacklist, stackLimit)
                 end
             end
             if drop then
-                if stackLimit then
-                    if emptiedSlots < stackLimit then
+                if keepSlots then
+                    if emptiedSlots < keepSlots then
+                        -- Skip dropping if keepSlots not reached
                         emptiedSlots = emptiedSlots + 1
+                    else
                         print("Dropping " .. data.name)
                         turtle.drop()
-                    else
-                        -- Stop dropping if stack limit reached
-                        break
+                        emptiedSlots = emptiedSlots + 1
                     end
                 else
                     print("Dropping " .. data.name)
                     turtle.drop()
+                    emptiedSlots = emptiedSlots + 1
                 end
+            end
+        end
+    end
+    if emptiedSlots == 0 then
+        print("No items dropped")
+    else
+        print(emptiedSlots .. " items dropped")
+    end
+end
+
+-- Sort inventory
+--  Stack items together
+--  Move items to first empty slot
+function tTurtle.sortInventory()
+    print("Sorting inventory...")
+    for i = 2, 16 do
+        local count = turtle.getItemCount(i)
+        if count > 0 then
+            turtle.select(i)
+            local j = 1
+            while turtle.getItemCount(i) > 0 and j < i do
+                turtle.transferTo(j, count)
+                j = j + 1
             end
         end
     end
