@@ -156,7 +156,7 @@ print("Download complete, starting program...")
 
 -- If instructions.txt exists, run doInstructions.lua
 if fs.exists("instructions.txt") then
-    downloadInstructions()
+    -- downloadInstructions()
     shell.run("doInstructions")
 else
     shell.run("editInstructions")

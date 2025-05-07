@@ -5,7 +5,7 @@
   "programs": [
     {
       "name": "startup.lua",
-      "version": "2.3"
+      "version": "2.4"
     },
     {
       "name": "tunnel.lua",
