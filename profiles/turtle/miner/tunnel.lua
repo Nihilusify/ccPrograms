@@ -208,9 +208,9 @@ for i = 1, length do
     -- If not, drop items to make space
     if length > 150 and i % inTunnelCheckLength == 0 then
         local invEmptySpace = tTurtle.getInventorySpace()
-        if (invEmptySpace < requiredEmptySlotsInTunnel) then
+        if (invEmptySpace < requiredEmptySlotsToContinue) then
             print("Not enough inventory space!  Dropping some items...")
-            tTurtle.dumpInventoryBlacklist({"primBlock"}, requiredEmptySlotsInTunnel - invEmptySpace)
+            tTurtle.dumpInventoryBlacklist({"primBlock"}, requiredEmptySlotsToContinue - invEmptySpace)
         end
     end
 
